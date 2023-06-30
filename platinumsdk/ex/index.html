@@ -53,6 +53,8 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#creating-alert">Creating alert</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#modifying-menulayerinit">Modifying MenuLayer::init</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -98,6 +100,63 @@
     &quot;Hello, World!&quot;,
     &quot;Close&quot;, NULL
 )-&gt;show();
+</code></pre>
+<h2 id="modifying-menulayerinit">Modifying MenuLayer::init</h2>
+<p>MenuLayer::init is a function what refers to Geometry Dash main menu.</p>
+<p>In this example we are saving previous state of MenuLayer::init and overwriting it.</p>
+<p>Function type should be <code>bool</code>, because it's <code>init</code>:</p>
+<pre><code class="language-cpp">#include &lt;Platinum.h&gt;
+#include &lt;Modify/MenuLayer.h&gt;
+
+bool init(MenuLayer* self) {
+    // getting window size
+    auto size = CCDirector::sharedDirector()-&gt;getVisibleSize();
+
+    // saving previous state
+    // MenuLayer_Origins is from Modify/MenuLayer.h
+    auto ret = MenuLayer_Origins::init(self);
+
+    // creating a sprite with an image from GJ_GameSheet03
+    // https://hjfod.github.io/cocos-headers/d8/de9/group__sprite__nodes.html#gac76716a663005d6cd59cb32e1c4bb077
+    auto sprite = CCSprite::createWithSpriteFrameName(&quot;GJ_updateBtn_001.png&quot;);
+
+    // creating a button
+    // https://hjfod.github.io/cocos-headers/db/dbd/classcocos2d_1_1_c_c_menu_item_sprite.html#ae68c2405e53e50c90fa874875c7ede66
+    // menu_selector() refers to MenuLayer::onDaily
+    auto button = CCMenuItemSpriteExtra::create(
+                sprite,
+                sprite,
+                self,
+                menu_selector(MenuLayer::onDaily)
+    );
+
+    // setting button scale to 1x
+    button-&gt;setScale(1.0);
+
+    // creating a menu (that's how cocos works)
+    auto menu = CCMenu::create();
+
+    // adding button to menu
+    // second argument is Z-pos (layer on the screen)
+    menu-&gt;addChild(button, 100);
+
+    // setting menu (button) position
+    menu-&gt;setPosition({
+        size.width / 20,
+        size.height / 10 * 7
+    });
+
+    // adding menu to MenuLayer
+    self-&gt;addChild(menu, 100);
+
+    // returning previous state with our button
+    return ret;
+}
+
+__attribute__((constructor))
+void load() {
+    MenuLayer_Hooks::init(init);
+}
 </code></pre>
               
             </div>
