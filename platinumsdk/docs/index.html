@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://arseny-sh.github.io/docs/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Documentation - Platinum SDK</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Documentation";
+        var mkdocs_page_input_path = "docs.md";
+        var mkdocs_page_url = "/docs/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Platinum SDK
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Documentation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting started</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuring">Configuring</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#coding">Coding</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#including-libraries">Including libraries</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hooking">Hooking</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#overwriting">Overwriting</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#applying-hooks">Applying hooks</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#building">Building</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#injecting">Injecting</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../ex/">Examples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Platinum SDK</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+      <li>Documentation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="documentation">Documentation</h1>
+<p>Detailed documentation, tutorials and examples.</p>
+<h2 id="installation">Installation</h2>
+<h3 id="getting-started">Getting started</h3>
+<ol>
+<li>
+<p>Download the <a href="https://github.com/arseny-sh/PlatinumSDK/releases/latest">release from GitHub</a> or type <code>git clone https://github.com/arseny-sh/PlatinumSDK.git</code>;</p>
+</li>
+<li>
+<p>Install <a href="https://github.com/android/ndk/wiki/Unsupported-Downloads#r16b">Android NDK version r16b</a>;</p>
+</li>
+<li>
+<p>Install <a href="https://python.org/downloads">Python</a> for tools (optional).</p>
+</li>
+</ol>
+<h3 id="configuring">Configuring</h3>
+<p>You need to provide path to Android NDK in build.bat:</p>
+<pre><code class="language-bat">set NDK=/path/to/ndk/
+rem ^^^ change your android ndk path ^^^
+</code></pre>
+<p>It must end with "/" or "\".</p>
+<p>Then enter the name of the mod in build.mk:</p>
+<pre><code class="language-make">MODNAME := template # mod name to build
+...
+</code></pre>
+<h2 id="coding">Coding</h2>
+<h3 id="including-libraries">Including libraries</h3>
+<p>At the beginning of the mod, you need to include the library "Platinum.h":</p>
+<pre><code class="language-cpp">#include &lt;Platinum.h&gt;
+</code></pre>
+<h3 id="hooking">Hooking</h3>
+<p>Modding on Android differs from modding on Windows in that on Android you need to provide the address of a function to replace it.</p>
+<p>For example <strong>MenuLayer::init</strong> refers to "_ZN9MenuLayer4initEv".</p>
+<p>This is called "hooking" and DobbyHook does this, but in the Platinum SDK hooking is simplified to the maximum.</p>
+<p>First, you have to include the hooks you need. They can be found in <strong>include/Modify</strong>:</p>
+<pre><code class="language-cpp">#include &lt;Modify/classname.h&gt;
+</code></pre>
+<p>Replace "classname" with the class name you need. For example:</p>
+<pre><code class="language-cpp">#include &lt;Modify/MenuLayer.h&gt;
+</code></pre>
+<p>(class names can be found in <strong>include/gd</strong>).</p>
+<h3 id="overwriting">Overwriting</h3>
+<p>Now define the required function. If it is "init", then the type is bool, otherwise it is "void":</p>
+<pre><code class="language-cpp">void onMoreGames(MenuLayer* self) {
+</code></pre>
+<p>(functions can be found in <strong>include/gd</strong> too)</p>
+<p>Usually, function arguments should be "classname* self". In other situations see <a href="../ex/">examples</a>.</p>
+<h3 id="applying-hooks">Applying hooks</h3>
+<p>After overwriting you need to apply your function.</p>
+<p>This is done using the functions from <strong>include/Modify</strong> folder:</p>
+<pre><code class="language-cpp">classname_Hooks::function((void*) replacement);
+</code></pre>
+<p>Replace "classname" with the class name, "function" with the function name to overwrite and "replacement" with your function. For example:</p>
+<pre><code class="language-cpp">MenuLayer_Hooks::onMoreGames((void*) onMoreGames);
+</code></pre>
+<p><code>(void*)</code> is required for hooking in all cases.</p>
+<p>Then put this code in the <code>loader()</code> function with <code>constructor</code> attribute. For example:</p>
+<pre><code class="language-cpp">__attribute__((constructor))
+void loader() {
+    MenuLayer_Hooks::onMoreGames((void*) onMoreGames);
+}
+</code></pre>
+<h2 id="building">Building</h2>
+<p>After you have written the code, you need to compile it. This is done with "build.bat" Windows Batch script.</p>
+<p>Double click it or run using <code>cmd.exe</code> to see the output. If everything went well, the errors shouldn't display. Compiled <code>.so</code> (shared object) libraries should appear in the folder "out".</p>
+<h2 id="injecting">Injecting</h2>
+<p>To inject the mod to Geometry Dash, you need its APK file (Android Package Kit). Download it <a href="https://www.mediafire.com/file/k1hbgjr4heyhrap/GeometryDash211.apk/file">here</a>.</p>
+<p>Then install <a href="https://www.mediafire.com/file/o11ejwr34thugxq/APK_Editor_1.10.0.apk/file">APK Editor</a> and <a href="https://www.mediafire.com/file/zfnygrc2irv95hs/Apktool_M_v2.4.0.apk/file">APKTool M</a> on Android.</p>
+<p>Open APKTool M and navigate to the downloaded Geometry Dash APK file. Then click it and choose "Quick edit". Change package name to something else, for example: <code>com.yourname.mods.yourmodname</code> and click "Save".</p>
+<p>After a few seconds you should see a file named something like <code>previousfilename_mod.apk</code>.</p>
+<p>Now open APK Editor, click "Select an Apk file" and navigate to your APK file with changed package name. Click on "Full Edit (RESOURCE RE-BUILD)" and then "Decode All Files (unstable)".</p>
+<p>Then click "Files" -&gt; "lib" -&gt; "armeabi-v7a" and click on "+". Add your compiled libraries from computer ("libdobby.so" and "libyourmodname.so"). Then click "Smali" and after it loads navigate to root APK directory -&gt; "smali" -&gt; "com" -&gt; "robtopx" -&gt; "geometryjump". Click on "GeometryJump.smali".</p>
+<p>You will see something like this:</p>
+<pre><code>.line 69
+const-string v0, &quot;fmod&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+
+.line 70
+const-string v0, &quot;cocos2dcpp&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+</code></pre>
+<p>After that code, copy-paste one of these blocks two times. Replace <code>.line num</code> with <code>.line 71</code> and <code>.line 72</code>.</p>
+<p>Then replace <code>const-string v0, "libraryname"</code> with "dobby" and "modname" <strong>(without "lib" and ".so")</strong>. You need to get something like this:</p>
+<pre><code>.line 69
+const-string v0, &quot;fmod&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+
+.line 70
+const-string v0, &quot;cocos2dcpp&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+
+.line 71
+const-string v0, &quot;dobby&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+
+.line 72
+const-string v0, &quot;modname&quot;
+
+invoke-static {v0}, Lkava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V
+</code></pre>
+<p>Click on "Save" and "Build".</p>
+<p>After a few seconds, click on "Install" and enjoy your first mod!</p>
+<p>For more interesting mods, see <a href="../ex/">examples</a>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ex/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../ex/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
