@@ -55,6 +55,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#modifying-menulayerinit">Modifying MenuLayer::init</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-a-label">Creating a label</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-a-custom-hook">Creating a custom hook</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -155,7 +159,88 @@ bool init(MenuLayer* self) {
 
 __attribute__((constructor))
 void load() {
-    MenuLayer_Hooks::init(init);
+    MenuLayer_Hooks::init((void*) init);
+}
+</code></pre>
+<h2 id="creating-a-label">Creating a label</h2>
+<p>In this example we are creating a label in MenuLayer.</p>
+<pre><code class="language-cpp">#include &lt;Platinum.h&gt;
+#include &lt;Modify/MenuLayer.h&gt;
+
+bool init(MenuLayer* self) {
+    // getting window size
+    auto size = CCDirector::sharedDirector()-&gt;getVisibleSize();
+
+    // saving previous state
+    // MenuLayer_Origins is from Modify/MenuLayer.h
+    auto ret = MenuLayer_Origins::init(self);
+
+    // creating a label with text &quot;Hello, World!&quot; and font &quot;chatFont.fnt&quot;
+    // you can also use &quot;bigFont.fnt&quot; and &quot;goldFont.fnt&quot;
+    // https://hjfod.github.io/cocos-headers/dc/dfb/classcocos2d_1_1_c_c_label_b_m_font.html#ac23bf59151c3daf0d1596497583d199a
+    auto label = CCLabelBMFont::create(&quot;Hello, World!&quot;, &quot;chatFont.fnt&quot;);
+
+    // configuring the label
+    label-&gt;setColor({255, 255, 255});
+    label-&gt;setPosition({size.width / 2, size.height - 15});
+    label-&gt;setScale(0.7);
+
+    // applying changes
+    self-&gt;addChild(label);
+
+    // returning previous state with our label
+    return ret;
+}
+
+__attribute__((constructor))
+void load() {
+    MenuLayer_Hooks::init((void*) init);
+}
+</code></pre>
+<h2 id="creating-a-custom-hook">Creating a custom hook</h2>
+<p>Custom hooks can be useful then there aren't any built-in hooks for your function, e.g Cocos function.</p>
+<p>In this example we are:</p>
+<ol>
+<li>
+<p>creating CCLabelBMFont origins;</p>
+</li>
+<li>
+<p>overwriting CCLabelBMFont to return "RobTop" every time;</p>
+</li>
+<li>
+<p>hooking it.</p>
+</li>
+</ol>
+<pre><code class="language-cpp">#include &lt;Platinum.h&gt;
+
+// creating custom origins
+namespace CCLabelBMFont_Origins {
+    CCLabelBMFont* (*create)(const char* str, const char* fntFile); // get function arguments here: https://hjfod.github.io/cocos-headers/
+}
+
+// creating custom hooks
+namespace CCLabelBMFont_Hooks {
+    void create(void* rep) {
+        // now we need to get CCLabelBMFont address.
+        // you can find all addresses in tools/functions.csv
+        // open it with any CSV viewer, e.g. https://csviewer.com/
+        // then find it and paste in the first argument
+        Hook(
+            &quot;_ZN7cocos2d13CCLabelBMFont6createEPKcS2_&quot;, // you can find multiple addresses
+            rep, // replacement
+            CCLabelBMFont_Origins::create // origin
+        );
+    }
+}
+
+// overwriting
+CCLabelBMFont* create(const char* str, const char* fntFile) { // get function arguments here: https://hjfod.github.io/cocos-headers/
+    return CCLabelBMFont_Origins::create(&quot;RobTop&quot;, fntFile); // always returning &quot;RobTop&quot;
+}
+
+__attribute__((constructor))
+void load() {
+    CCLabelBMFont_Hooks::create((void*) create);
 }
 </code></pre>
               
