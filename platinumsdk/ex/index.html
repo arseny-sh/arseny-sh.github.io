@@ -88,21 +88,17 @@
                 <h1 id="examples">Examples</h1>
 <h2 id="creating-alert">Creating alert</h2>
 <p>Alert is the easiest way to check if the mod is working.</p>
-<p>To create an alert, call the function <code>FLAlertLayer::create</code> with arguments:</p>
+<p>To create an alert, call the function <code>Alert</code> with arguments:</p>
 <ol>
-<li><strong>(FLAlertLayerProtocol*) delegate</strong> - set to <code>nullptr</code>;</li>
 <li><strong>(const char*) title</strong> - alert title;</li>
 <li><strong>(std::string) text</strong> - alert text;</li>
-<li><strong>(const char*) btn1Text</strong> - text of the first button (set to <code>NULL</code> if you won't use);</li>
-<li><strong>(const char*) btn2Text</strong> - text of the second button (set to <code>NULL</code> if you won't use);</li>
-<li><strong>[optional] (float) layerHeight</strong> - alert height;</li>
-<li><strong>[optional] (bool) scrollable</strong> - can scroll an alert;</li>
+<li><strong>(const char*) btn1Text</strong> - text of the first button (set to <code>empty</code> if you won't use);</li>
+<li><strong>(const char*) btn2Text</strong> - text of the second button (set to <code>empty</code> if you won't use);</li>
 </ol>
-<pre><code class="language-cpp">FLAlertLayer::create(
-    nullptr,
+<pre><code class="language-cpp">Alert(
     &quot;Platinum SDK&quot;,
     &quot;Hello, World!&quot;,
-    &quot;Close&quot;, NULL
+    &quot;Close&quot;, empty
 )-&gt;show();
 </code></pre>
 <h2 id="modifying-menulayerinit">Modifying MenuLayer::init</h2>
@@ -113,32 +109,27 @@
 #include &lt;Modify/MenuLayer.h&gt;
 
 bool init(MenuLayer* self) {
-    // getting window size
-    auto size = CCDirector::sharedDirector()-&gt;getVisibleSize();
+    auto size = getScreenSize();
 
     // saving previous state
     // MenuLayer_Origins is from Modify/MenuLayer.h
     auto ret = MenuLayer_Origins::init(self);
 
     // creating a sprite with an image from GJ_GameSheet03
-    // https://hjfod.github.io/cocos-headers/d8/de9/group__sprite__nodes.html#gac76716a663005d6cd59cb32e1c4bb077
-    auto sprite = CCSprite::createWithSpriteFrameName(&quot;GJ_updateBtn_001.png&quot;);
+    auto sprite = Frame(&quot;GJ_updateBtn_001.png&quot;);
 
     // creating a button
-    // https://hjfod.github.io/cocos-headers/db/dbd/classcocos2d_1_1_c_c_menu_item_sprite.html#ae68c2405e53e50c90fa874875c7ede66
-    // menu_selector() refers to MenuLayer::onDaily
     auto button = CCMenuItemSpriteExtra::create(
                 sprite,
-                sprite,
                 self,
-                menu_selector(MenuLayer::onDaily)
+                MenuLayer::onDaily
     );
 
     // setting button scale to 1x
     button-&gt;setScale(1.0);
 
     // creating a menu (that's how cocos works)
-    auto menu = CCMenu::create();
+    auto menu = Menu();
 
     // adding button to menu
     // second argument is Z-pos (layer on the screen)
@@ -157,9 +148,8 @@ bool init(MenuLayer* self) {
     return ret;
 }
 
-__attribute__((constructor))
-void load() {
-    MenuLayer_Hooks::init((void*) init);
+Loader {
+    MenuLayer_Hooks::init(hook(init));
 }
 </code></pre>
 <h2 id="creating-a-label">Creating a label</h2>
@@ -169,18 +159,18 @@ void load() {
 
 bool init(MenuLayer* self) {
     // getting window size
-    auto size = CCDirector::sharedDirector()-&gt;getVisibleSize();
+    auto size = getScreenSize();
 
     // saving previous state
     // MenuLayer_Origins is from Modify/MenuLayer.h
     auto ret = MenuLayer_Origins::init(self);
 
-    // creating a label with text &quot;Hello, World!&quot; and font &quot;chatFont.fnt&quot;
-    // you can also use &quot;bigFont.fnt&quot; and &quot;goldFont.fnt&quot;
-    // https://hjfod.github.io/cocos-headers/dc/dfb/classcocos2d_1_1_c_c_label_b_m_font.html#ac23bf59151c3daf0d1596497583d199a
-    auto label = CCLabelBMFont::create(&quot;Hello, World!&quot;, &quot;chatFont.fnt&quot;);
+    // creating a label with text &quot;Hello, World!&quot; and chat font (like Arial)
+    // you can also use bigFont and goldFont
+    auto label = Label(&quot;Hello, World!&quot;, chatFont);
 
     // configuring the label
+    label-&gt;setAlignment(tcenter);
     label-&gt;setColor({255, 255, 255});
     label-&gt;setPosition({size.width / 2, size.height - 15});
     label-&gt;setScale(0.7);
@@ -192,9 +182,8 @@ bool init(MenuLayer* self) {
     return ret;
 }
 
-__attribute__((constructor))
-void load() {
-    MenuLayer_Hooks::init((void*) init);
+Loader {
+    MenuLayer_Hooks::init(hook(init));
 }
 </code></pre>
 <h2 id="creating-a-custom-hook">Creating a custom hook</h2>
@@ -225,7 +214,7 @@ namespace CCLabelBMFont_Hooks {
         // you can find all addresses in tools/functions.csv
         // open it with any CSV viewer, e.g. https://csviewer.com/
         // then find it and paste in the first argument
-        Hook(
+        CustomHook(
             &quot;_ZN7cocos2d13CCLabelBMFont6createEPKcS2_&quot;, // you can find multiple addresses
             rep, // replacement
             CCLabelBMFont_Origins::create // origin
@@ -238,9 +227,8 @@ CCLabelBMFont* create(const char* str, const char* fntFile) { // get function ar
     return CCLabelBMFont_Origins::create(&quot;RobTop&quot;, fntFile); // always returning &quot;RobTop&quot;
 }
 
-__attribute__((constructor))
-void load() {
-    CCLabelBMFont_Hooks::create((void*) create);
+Loader {
+    CCLabelBMFont_Hooks::create(hook(create));
 }
 </code></pre>
               
